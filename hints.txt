@@ -1,0 +1,36 @@
+
+dict: 	d.keys(), d.values(), d.items()
+
+from collections import defaultdict
+values = defaultdict(int)
+values[10]) --> 0
+
+from collections import Counter
+counter = Counter(list/dict)
+counter[elem]
+
+from itertools import cycle
+pool = cycle(list/string/tuple)
+a = next (pool)
+
+from collections import deque  
+de = deque(list)
+de.append(v)			# append value to the right
+de.appendleft(v)		# append value to the left
+v = de.pop()			# take value from the right
+v = de.popleft())		# take value from the left
+
+from itertools import count
+result = count(start, step)					# Generate count from start to infinity, with step
+
+from itertools import repeat
+result = repeat(value, count)					# Generate repeating value for count times
+
+from itertools import takewhile
+result = takewhile(lambda v: v < 10, values)			# Take values from a list until one is higher than 9
+
+from itertools import dropwhile
+result = dropwhile(lambda s: len(s) < 4, values)		# Drop values from a list until one has a length higher than 4
+
+from itertools import filterfalse
+result = filterfalse(lambda e: len(e) >= 4, values)		# Filter out values with length greater than or equal to 4
