@@ -1,10 +1,10 @@
 
+from aoc import Puzzle
+
 # Get the data
-data = []
-f = open("input.txt")
-for line in f.readlines():
-    data.append(line.strip())
-f.close()
+p = Puzzle("day01")
+data = p.rawdata()
+
 
 # Process the data
 elfs = []
@@ -17,9 +17,10 @@ for i in data:
     else:
         cals += int(i)
 
+elfs.sort()
+
 # Part 1
-print (max(elfs))
+print (elfs[-1])
 
 # Part 2
-elfs.sort()
 print (sum(elfs[-3:]))
