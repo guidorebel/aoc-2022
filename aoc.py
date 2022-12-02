@@ -1,15 +1,16 @@
 
 
-class Puzzle(object):
+class PuzzleData():
 
-
-    def __init__(self, day) -> None:
+    def __init__(self, day, example=False) -> None:
         
         self.day = day
-        self.input = f"..\\input\\{self.day}.txt"
 
+        datafile = day
+        if example: datafile+="example"
+        self.input = f"input\\{datafile}.txt"
 
-
+        
     def rawdata(self):
 
         data=[]
