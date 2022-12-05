@@ -1,17 +1,10 @@
 
-import os
+from aoc import PuzzleData
 
 from collections import defaultdict
 
-today = os.path.basename(__file__)
-today = today.replace(".py", "")
-#today = today+"-example"
-today = f"..\\input\\{today}.txt"
-
-data=[]
-with open(today, "r") as f:
-    for line in f.readlines():
-        data.append(line.replace("\n",""))
+puzzle = PuzzleData(__file__)
+data = puzzle.rawdata()
 
 
 #=============================================

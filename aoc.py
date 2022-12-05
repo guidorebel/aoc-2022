@@ -1,23 +1,27 @@
 
+import os
 
 class PuzzleData():
 
-    def __init__(self, day, example=False) -> None:
-        
-        self.day = day
+    def __init__(self, scriptfname:str) -> None:
 
-        datafile = day
-        if example: datafile+="-example"
-        self.input = f"input\\{datafile}.txt"
+        self.today = os.path.basename(scriptfname)
+        self.today = self.today.replace(".py", "")
 
-        
-    def rawdata(self):
+        self.dirname = os.path.dirname(scriptfname)
+
+
+    def rawdata(self, exampleData = False):
+
+        datafile = self.today
+        if exampleData: datafile += "-example"
+        datafile += ".txt"
+
+        datafile = os.path.join (self.dirname, "..\\input\\", datafile)
+        datafile = os.path.abspath(datafile)
 
         data=[]
-
-        with open(self.input, "r") as f:
+        with open(datafile, "r") as f:
             for line in f.readlines():
                 data.append(line.replace("\n",""))
-        
         return data
-
