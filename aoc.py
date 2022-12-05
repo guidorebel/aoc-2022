@@ -7,7 +7,7 @@ class PuzzleData():
         self.day = day
 
         datafile = day
-        if example: datafile+="example"
+        if example: datafile+="-example"
         self.input = f"input\\{datafile}.txt"
 
         
@@ -17,7 +17,7 @@ class PuzzleData():
 
         with open(self.input, "r") as f:
             for line in f.readlines():
-                data.append(line.strip())
+                data.append(line.replace("\n",""))
         
         return data
 
