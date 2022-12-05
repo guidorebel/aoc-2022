@@ -1,15 +1,30 @@
 
-from aoc import PuzzleData
+import os
+
 from collections import defaultdict
 
-p = PuzzleData("day05")
-data = p.rawdata()
+today = os.path.basename(__file__)
+today = today.replace(".py", "")
+#today = today+"-example"
+today = f"..\\input\\{today}.txt"
 
-# Part 1
-reverseOrder = True
+data=[]
+with open(today, "r") as f:
+    for line in f.readlines():
+        data.append(line.replace("\n",""))
 
-# Part 2
-#reverseOrder = False
+
+#=============================================
+
+def buildStacks(stacks, line):
+
+    i = 1
+    for p in range (0, len(line), 4):
+        value = line[p+1]
+        if value!=" ": stacks[i].insert(0, value)
+        i +=1
+
+    return stacks
 
 #=============================================
 
@@ -31,6 +46,34 @@ def printStacks(stacks):
 
 #=============================================
 
+def moveStacks(stacks, line, reversed):
+
+    move     = int(line.split(" from ")[0].replace ("move ", ""))
+    movefrom = int(line.split(" from ")[1].split(" to ")[0])
+    moveto   = int(line.split(" from ")[1].split(" to ")[1])
+
+    print ("")
+    print (line, " --> ", move, movefrom, moveto)
+    print ("")
+
+    # Take items from the stack and store them in a temporary list
+    tmp = []
+    for i in range(move):
+        item = stacks[movefrom].pop()
+        tmp.append(item)
+
+    # Put the items back in the requested order
+    if not reversed: tmp.reverse()
+    for t in tmp: stacks[moveto].append(t)
+
+    print ("")
+    printStacks(stacks)
+    print ("")    
+
+    return stacks
+
+#=============================================
+
 def printTopCrates(stacks):
 
     count = len(stacks)
@@ -40,60 +83,20 @@ def printTopCrates(stacks):
 
 
 #=============================================
+#=============================================
 
 stacks = defaultdict(list)
 
 for line in data:
 
-    if line.find("[") >= 0:
+    # Build the stacks of crates
+    if line.find("[") >= 0: stacks = buildStacks(stacks, line)
 
-        # Build the stacks of crates
+    # Print the stacks of crates
+    elif line == "": printStacks(stacks)
 
-        i = 1
-        for p in range (1, 37, 4):
-            try:    value = line[p]
-            except: value = " "
-            if value!=" ": stacks[i].insert(0, line[p])
-            i +=1
-
-
-    elif line == "":
-
-        # Print the stacks of crates
-
-        printStacks(stacks)
-
-
-    elif line.find("move") >= 0:
-
-        # Move the crates arround
-
-        # move 11 from 8 to 3
-        move     = int(line.split(" from ")[0].replace ("move ", ""))
-        movefrom = int(line.split(" from ")[1].split(" to ")[0])
-        moveto   = int(line.split(" from ")[1].split(" to ")[1])
-
-        print ("")
-        print (line, " --> ", move, movefrom, moveto)
-        print ("")
-
-        tmp = []
-        for i in range(move):
-            item = stacks[movefrom].pop()
-            tmp.append(item)
-
-        if reverseOrder:
-            for t in tmp:
-                stacks[moveto].append(t)
-
-        else:
-            tmp.reverse()
-            for t in tmp:
-                stacks[moveto].append(t)
-
-        print ("")
-        printStacks(stacks)
-        print ("")
-        
+    # Move the crates arround
+    #elif line.find("move") >= 0: stacks = moveStacks(stacks, line, True)  # Part1
+    elif line.find("move") >= 0: stacks = moveStacks(stacks, line, False) # Part2
 
 printTopCrates(stacks)
