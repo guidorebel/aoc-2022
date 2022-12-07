@@ -4,112 +4,84 @@ from aoc import PuzzleData
 puzzle = PuzzleData(__file__)
 data = puzzle.rawdata()
 
-    
+
 class Directory():
 
-    def __init__(self, name) -> None:
-        self.name = name
-        self.dirList = []
-        self.fileList = []
+    def __init__(self, parent = None):
 
-    def getsize(self):
-        size = 0
-        size += sum([item.getsize() for item in self.fileList])
-        size += sum([item.getsize() for item in self.dirList])
-        return size
+        self.parent = parent
+
+        self.size = 0
+        self.files = {}
+        self.dirs = {}
 
 
-class File():
-    def __init__(self, name:str, size:int) -> None:
-        self.name = name
-        self.size = size
-
-    def getsize(self):
-        return self.size
-
-
-def parseConsoleOutput(curdir:Directory, index:int):
-
-    while True:
-
-        index+=1
-        if index >= len (data): break
-
-        line = data[index]
-
-        if   line.find ("dir") == 0: pass     # This is a reference to a dir in the current dir, ignore it
-        elif line.find ("$ ls") == 0: pass    # This is a reference to a dir in the current dir, ignore it
-        elif line.find("$ cd ..") == 0: break # This is a command to go one level up, break out of the recursion
-        elif line.find("$ cd ") == 0:         # This is a command to go into a directory, enter recursion
-     
-            name = line.replace("$ cd ", "")
-            newdir = Directory(name)
-            curdir.dirList.append(newdir)
-            index = parseConsoleOutput(newdir, index)
-
-        else:                                 # This must be a file reference
-
-            size, name = line.split(" ")
-            size = int(size)
-            newfile = File(name, size)
-            curdir.fileList.append(newfile)
-
-    return index
+    def addFile(self, name, size):
+        self.files[name] = size
+        self.size += size
+        
+        parent = self.parent
+        while parent:
+            parent.size += size
+            parent = parent.parent
 
 
-def printFileSystem(curdir:Directory, level:int):
-    
-    dirsize = 0
-    answer = 0
+def parseInstructions(data) -> Directory:
 
-    indent = level*" "
-    for dir in curdir.dirList:
-        print (f"{indent}- {dir.name} (dir)")
-        d, a = printFileSystem(dir,level+1)
-        dirsize += d
-        answer += a
+    filesystem = Directory()
 
-    for file in curdir.fileList:
-        print (f"{indent}- {file.name} (file, size={file.size})")
-        dirsize += file.size
+    cwd = filesystem
 
-    if dirsize < 100000:
-        answer += dirsize
+    for line in data:
+        match line.split():
+            case ["$", "ls"]:
+                pass # nothing to do here
+            case ["$", "cd", "/"]:
+                cwd = filesystem
+            case ["$", "cd", ".."]:
+                cwd = cwd.parent
+            case ["$", "cd", name]:
+                cwd = cwd.dirs[name]
+            case ["dir", name]:
+                cwd.dirs[name] = Directory(cwd)
+            case [size, name]:
+                cwd.addFile(name, int(size))
+            case _:
+                print ("now what?")
 
-    return dirsize, answer
-
-
-def findDir (curdir:Directory, needed, answer):
-
-    dirsize = 0
-
-    for dir in curdir.dirList:
-        d, answer = findDir(dir, needed, answer)
-        dirsize += d
-
-    for file in curdir.fileList:
-        dirsize += file.size
-
-    if dirsize >= needed and dirsize < answer:
-        answer = dirsize
-
-    return dirsize, answer
+    return filesystem
 
 
-root = Directory("/")
-index = 0
+def getDirSize(dir: Directory, limit: int) -> int:
 
-parseConsoleOutput(root, index)
+    total = dir.size if dir.size <= limit else 0
 
-d, a = printFileSystem(root, 0)
+    for name, subdir in dir.dirs.items():
+        total += getDirSize(subdir, limit)
 
-print (a)
+    return total
 
-total = 70000000
-used = d
-available = total - used
-required = 30000000
-needed = required - available
 
-d, a = findDir(root, needed, total)
-print (a)
+def getDirToDeleteSize(dir: Directory, target: int) -> int:
+
+    size = None
+
+    if dir.size > target:
+
+        size = dir.size
+
+        for name, subdir in dir.dirs.items():
+            subdirsize = getDirToDeleteSize(subdir, target)
+            if subdirsize: size = min(size, subdirsize)
+
+    return size
+
+
+filesystem = parseInstructions(data)
+
+# Part 1
+print (getDirSize (filesystem, 100000))
+
+# Part 2
+target = 30000000 - (70000000 - filesystem.size)
+print (getDirToDeleteSize(filesystem, target))
