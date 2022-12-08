@@ -8,20 +8,35 @@ class PuzzleData():
         self.today = os.path.basename(scriptfname)
         self.today = self.today.replace(".py", "")
 
-        self.dirname = os.path.dirname(scriptfname)
+        self.scriptdir = os.path.dirname(scriptfname)
 
 
-    def rawdata(self, exampleData = False):
+    def getData(self):
 
         datafile = self.today
-        if exampleData: datafile += "-example"
         datafile += ".txt"
 
-        datafile = os.path.join (self.dirname, "..\\input\\", datafile)
-        datafile = os.path.abspath(datafile)
+        datafile = os.path.join (self.scriptdir, "..\\input\\", datafile)
+        datafile = os.path.abspath (datafile)
 
-        data=[]
-        with open(datafile, "r") as f:
-            for line in f.readlines():
-                data.append(line.replace("\n",""))
+        data = []
+        with open (datafile, "r") as f:
+            data = f.read()
         return data
+
+
+    def getStrList(self):
+
+        data=self.getData()
+        return data.split("\n")
+
+
+    def getIntGrid(self):
+
+        data = self.getData()
+        data = data.split("\n")
+
+        grid = []
+        for line in data: grid.append([int(i) for i in line])
+        return grid
+
