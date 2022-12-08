@@ -1,22 +1,23 @@
 
 from aoc import PuzzleData
+from typing import Any, Optional
 
 puzzle = PuzzleData(__file__)
-data = puzzle.rawdata()
+data = puzzle.getStrList()
 
 
 class Directory():
 
-    def __init__(self, parent = None):
+    def __init__(self, parent: "Directory" | None) -> None: 
 
-        self.parent = parent
+        self.parent: Directory | None = parent
 
-        self.size = 0
-        self.files = {}
-        self.dirs = {}
+        self.size: int = 0
+        self.files: dict = {}
+        self.dirs: dict = {}
 
 
-    def addFile(self, name, size):
+    def addFile(self, name: str, size: int) -> None:
         self.files[name] = size
         self.size += size
         
@@ -26,9 +27,9 @@ class Directory():
             parent = parent.parent
 
 
-def parseInstructions(data) -> Directory:
+def parseInstructions(data: list[str]) -> Directory:
 
-    filesystem = Directory()
+    filesystem = Directory(None)
 
     cwd = filesystem
 
@@ -62,7 +63,7 @@ def getDirSize(dir: Directory, limit: int) -> int:
     return total
 
 
-def getDirToDeleteSize(dir: Directory, target: int) -> int:
+def getDirToDeleteSize(dir: Directory, target: int) -> Any:
 
     size = None
 
@@ -77,7 +78,7 @@ def getDirToDeleteSize(dir: Directory, target: int) -> int:
     return size
 
 
-filesystem = parseInstructions(data)
+filesystem: Directory = parseInstructions(data)
 
 # Part 1
 print (getDirSize (filesystem, 100000))

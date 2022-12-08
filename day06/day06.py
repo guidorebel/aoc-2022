@@ -2,7 +2,7 @@
 from aoc import PuzzleData
 
 puzzle = PuzzleData(__file__)
-data = puzzle.rawdata()[0]
+data = puzzle.getData()
 
 def findFirstMarker (data, length):
 

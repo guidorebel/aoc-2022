@@ -1,8 +1,8 @@
 
 from aoc import PuzzleData
 
-p = PuzzleData("day03")
-data = p.rawdata()
+puzzle = PuzzleData(__file__)
+data = puzzle.getStrList()
 
 
 total = 0

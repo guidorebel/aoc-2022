@@ -1,8 +1,8 @@
 
 from aoc import PuzzleData
 
-p = PuzzleData("day02")
-data = p.rawdata()
+puzzle = PuzzleData(__file__)
+data = puzzle.getStrList()
 
 ROCK, PAPER, SCISSORS = [0, 1, 2]
 LOSS, DRAW, WIN       = [0, 3, 6]

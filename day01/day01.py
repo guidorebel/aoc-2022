@@ -1,10 +1,8 @@
 
-from aoc import Puzzle
+from aoc import PuzzleData
 
-# Get the data
-p = Puzzle("day01")
-data = p.rawdata()
-
+puzzle = PuzzleData(__file__)
+data = puzzle.getStrList()
 
 # Process the data
 elfs = []

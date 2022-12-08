@@ -4,7 +4,7 @@ from aoc import PuzzleData
 from collections import defaultdict
 
 puzzle = PuzzleData(__file__)
-data = puzzle.rawdata()
+data = puzzle.getStrList()
 
 
 #=============================================
@@ -78,7 +78,7 @@ def printTopCrates(stacks):
 #=============================================
 #=============================================
 
-stacks = defaultdict(list)
+stacks: defaultdict = defaultdict(list)
 
 for line in data:
 

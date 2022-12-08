@@ -1,8 +1,8 @@
 
 from aoc import PuzzleData
 
-p = PuzzleData("day02")
-data = p.rawdata()
+puzzle = PuzzleData(__file__)
+data = puzzle.getStrList()
 
 ROCK, PAPER, SCISSORS = [1, 2, 3]
 LOSS, DRAW, WIN       = [0, 3, 6]
@@ -23,8 +23,8 @@ class RockPaperScissors (object):
         elif other == PAPER    and me == SCISSORS: return WIN
         elif other == SCISSORS and me == ROCK:     return WIN
         elif other == SCISSORS and me == PAPER:    return LOSS
-
-
+        else:                                      return -1
+        
     def MyShapeFromResult(self, other:int, result:int) -> int:
 
         if   result == DRAW:        me = other
