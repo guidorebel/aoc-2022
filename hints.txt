@@ -3,7 +3,7 @@ dict: 	d.keys(), d.values(), d.items()
 
 from collections import defaultdict
 values = defaultdict(int)
-values[10]) --> 0
+values[10] --> 0
 
 from collections import Counter
 counter = Counter(list/dict)
