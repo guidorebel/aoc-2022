@@ -8,6 +8,19 @@ ROCK = 1
 SAND = 2
 
 
+class Coord():
+
+    def __init__(self, coord: str) -> None:
+        self.coord = [int(c) for c in coord.split(",")]
+
+    def __lt__(self, other: "Coord") -> bool:
+        return self.coord < other.coord
+
+    def __gt__(self, other: "Coord") -> bool:
+        return self.coord > other.coord
+
+
+
 class Cave():
 
     def __init__(self) -> None:
@@ -15,6 +28,12 @@ class Cave():
         self.world: dict = defaultdict (int)
         self.max_y = 0
         self.floor_y = inf
+
+
+    def sortCoords(self, c1: Coord, c2: Coord):
+        if   c1 < c2: return c1.coord + c2.coord
+        elif c1 > c2: return c2.coord + c1.coord
+
 
     def buildWorld (self, floor: bool = False) -> None:
 
@@ -25,29 +44,18 @@ class Cave():
         for line in data:
             
             coords = line.split (" -> ")
-            
-            i = 0
-            while i < len(coords)-1:
+            for c1, c2 in zip (coords, coords[1:]):
+                s_x, s_y, e_x, e_y = self.sortCoords(Coord(c1), Coord(c2))
 
-                s_x, s_y = [int(k) for k in coords[i].split(",")]
-                e_x, e_y = [int(k) for k in coords[i+1].split(",")]
+                # Save the rock coordinates
+                for x in range(s_x, e_x+1):
+                    for y in range(s_y, e_y+1):
+                        self.world[(x, y)] = ROCK
 
+                # Store the max y value of the rocks
                 self.max_y = max(self.max_y, s_y, e_y)
 
-                self.world[(s_x, s_y)] = ROCK
-                self.world[(e_x, e_y)] = ROCK
-
-                if s_x == e_x:
-                    for j in range(s_y, e_y, 1 if s_y < e_y else -1):
-                        self.world[(s_x, j)] = ROCK
-
-                elif s_y == e_y:
-                    for j in range(s_x, e_x, 1 if s_x < e_x else -1):
-                        self.world[(j, s_y)] = ROCK
-
-                i+=1
-
-
+        # To use the floor, set its y coordinate 2 lower than the max y
         if floor:
             self.floor_y = self.max_y + 2
             self.max_y = inf
